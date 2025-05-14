@@ -1,0 +1,11 @@
+package io.github.nicepay.api.v2
+
+import io.github.nicepay.data.response.v2.NICEPayResponseV2
+import retrofit2.Call
+import retrofit2.http.Body
+
+interface DirectV2Api {
+
+    fun hitDirectV2Api(@Body request: Any?): Call<NICEPayResponseV2?>?
+
+}
