@@ -5,8 +5,8 @@ import io.github.nicepay.api.v2.CheckStatusDirectV2Api
 import io.github.nicepay.data.model.DirectV2Cancel
 import io.github.nicepay.data.model.DirectV2CheckStatus
 import io.github.nicepay.data.response.v2.NICEPayResponseV2
-import io.github.nicepay.service.v2.CommonDirectV2Service
 import io.github.nicepay.service.v2.ApiHttpService
+import io.github.nicepay.service.v2.CommonDirectV2Service
 import io.github.nicepay.utils.ApiUtils
 import io.github.nicepay.utils.NICEPay
 

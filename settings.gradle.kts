@@ -1,1 +1,1 @@
-rootProject.name = "kotlin-nicepay"
+rootProject.name = "nicepay-kotlin-client"
