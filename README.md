@@ -23,15 +23,82 @@ It supports both [NICEPAY SNAP APIs](https://docs.nicepay.co.id/nicepay-api-snap
 
 ## 📦 Installation
 
-Published on **Maven Central**.
+Published on **[Maven Central](https://central.sonatype.com/artifact/io.github.nicepay-dev/nicepay-kotlin-client)**.
 
-### Gradle (Kotlin DSL)
+---
+
+### ✅ Option 1: Gradle (Kotlin DSL)
 
 ```kotlin
 dependencies {
-    implementation("io.github.nicepay-dev:nicepay-kotlin-client:1.0.0")
+  implementation("io.github.nicepay-dev:nicepay-kotlin-client:1.0.0")
 }
 ```
+
+---
+
+### ✅ Option 2: Gradle (Groovy DSL)
+
+```groovy
+dependencies {
+  implementation 'io.github.nicepay-dev:nicepay-kotlin-client:1.0.0'
+}
+```
+
+---
+
+### ✅ Option 3: Maven
+
+```xml
+<dependency>
+  <groupId>io.github.nicepay-dev</groupId>
+  <artifactId>nicepay-kotlin-client</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+---
+
+### ✅ Option 4: Manual Installation (Build JAR Locally)
+
+If you don’t want to use a build tool like Maven or Gradle:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/nicepay-dev/kotlin-nicepay-lib.git
+cd kotlin-nicepay-lib
+```
+
+2. Build the JAR file:
+
+```bash
+./gradlew clean build
+```
+
+The JAR will be generated in the `build/libs` directory.
+
+3. Copy the JAR into your own project (e.g., into a `libs/` folder).
+
+4. Add the local JAR to your dependencies:
+
+**Kotlin DSL:**
+
+```kotlin
+dependencies {
+    implementation(files("libs/nicepay-kotlin-client-1.0.0.jar"))
+}
+```
+
+**Groovy DSL:**
+
+```groovy
+dependencies {
+    implementation files('libs/nicepay-kotlin-client-1.0.0.jar')
+}
+```
+
+
 
 ---
 
