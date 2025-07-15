@@ -1,4 +1,6 @@
-# Kotlin - NICEPAY SDK
+# Kotlin - NICEPAY
+
+NICEPAY ❤️ Kotlin!
 
 This is the **official Kotlin SDK** for integrating with the [NICEPAY Payment API](https://docs.nicepay.co.id/).  
 It supports both [NICEPAY SNAP APIs](https://docs.nicepay.co.id/nicepay-api-snap) and [NICEPAY V2 APIs](https://docs.nicepay.co.id/nicepay-api-v2).
