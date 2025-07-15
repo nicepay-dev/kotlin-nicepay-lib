@@ -6,8 +6,8 @@ import io.github.nicepay.data.model.DirectV2CancelPayout
 import io.github.nicepay.data.model.DirectV2InquiryPayout
 import io.github.nicepay.data.model.DirectV2Payout
 import io.github.nicepay.data.response.v2.NICEPayResponseV2
-import io.github.nicepay.service.v2.DirectV2PayoutService
 import io.github.nicepay.service.v2.ApiHttpService
+import io.github.nicepay.service.v2.DirectV2PayoutService
 import io.github.nicepay.utils.ApiUtils
 import io.github.nicepay.utils.NICEPay
 import io.github.nicepay.utils.code.PayoutAction

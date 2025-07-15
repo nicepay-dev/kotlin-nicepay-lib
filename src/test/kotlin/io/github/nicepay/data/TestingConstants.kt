@@ -4,6 +4,8 @@ import java.awt.Desktop
 import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class TestingConstants {
@@ -12,6 +14,7 @@ class TestingConstants {
         private fun TestingConstants() {}
 
 
+        val SAMPLE_SIGNATURE_STRING: String = ""
         var f: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
 
         val TIMESTAMP: String = f.format(Date())
@@ -24,45 +27,22 @@ class TestingConstants {
             "OrdNo" + TIMESTAMP.substring(0, 10).replace("-", "") + TIMESTAMP.substring(11, 19).replace(":", "") + random
 
         val PARTNER_ID: String = ""
-
+        val IONPAYTEST_CLOUD_PRIVATE_KEY = ""
         val CLIENT_SECRET: String = ""
-
-        val PRIVATE_KEY: String = ""
-
         val PUBLIC_KEY: String = ""
-
-
-
+        const val I_MID_NORMALTEST: String = ""
+        const val NORMALTEST_CLIENT_SECRET: String = ""
+        const val PRIVATE_KEY: String = ""
         var v2_format: SimpleDateFormat = SimpleDateFormat("yyyyMMddHHmmss")
-
         val V2_TIMESTAMP: String = v2_format.format(Date())
-
-        val MERCHANT_KEY: String = ""
-
-        val I_MID_NORMALCLOSED: String = ""
-
-        val I_MID_INSTLMNT: String = ""
-
-        val INSTLMNT_CLIENT_SECRET: String = ""
-
-        val I_MID_RECURRING: String = ""
-
-        val I_MID_PAC: String = ""
-
-
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+        val V2_TIMESTAMP_ADD_1D = LocalDateTime.now().plusDays(1).format(formatter)
         val I_MID_QRIS: String = ""
-
         val QRIS_CLIENT_SECRET: String = ""
-
-        val QRIS_STORE_ID: String = ""
-
-        val I_MID_EWALLET: String = ""
-
-        val I_MID: String = ""
-        val CLOUD_CLIENT_SECRET: String = ""
         val CLOUD_PRIVATE_KEY: String = ""
         val NORMALTEST_CLOUD_PRIVATE_KEY: String = ""
-
+        val I_MID_EWALLET: String = ""
+        val EWALLET_CLIENT_SECRET: String = ""
         val DEFAULT_NICEPAY_SUCCESS_RESULT_CODE = "0000"
 
         fun openHtmlEwalletV2InBrowser(resClient: String, tXid: String) {
@@ -80,6 +60,12 @@ class TestingConstants {
 
             // Open page on browser
             Desktop.getDesktop().browse(tempFile.toURI())
+        }
+
+        fun generateExternalId() : String{
+            var random: Int = rand.nextInt(10000)
+            return "kotlinExtID" + TIMESTAMP.substring(0, 10).replace("-", "") + TIMESTAMP.substring(11, 19).replace(":", "") + random
+
         }
     }
 }

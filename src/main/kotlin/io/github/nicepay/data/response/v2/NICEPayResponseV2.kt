@@ -1,6 +1,5 @@
 package io.github.nicepay.data.response.v2
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 
 class NICEPayResponseV2 : BaseNICEPayResponseV2() {
