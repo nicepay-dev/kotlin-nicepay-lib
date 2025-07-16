@@ -40,6 +40,8 @@ tasks.test {
 	useJUnitPlatform()
 }
 
+
+
 publishing {
 	publications {
 		create<MavenPublication>("maven") {
@@ -98,13 +100,59 @@ publishing {
 			name = "centralPortal"
 			url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
 			credentials {
-				username = findProperty("mavenCentralUsername") as String? ?: System.getenv("MAVEN_CENTRAL_USERNAME")
-				password = findProperty("mavenCentralPassword") as String? ?: System.getenv("MAVEN_CENTRAL_PASSWORD")
+				username = findProperty("mavenCentralUsername")?.toString() ?: System.getenv("MAVEN_CENTRAL_USERNAME")
+				password = findProperty("mavenCentralPassword")?.toString() ?: System.getenv("MAVEN_CENTRAL_PASSWORD")
 			}
 		}
 	}
 }
 
 signing {
+	val keyId = findProperty("signing.keyId")?.toString()
+	val signingKey = findProperty("signing.key")?.toString()
+	val signingPassword = findProperty("signing.password")?.toString()
+
+	logger.lifecycle("signing.keyId loaded: ${!keyId.isNullOrBlank()}")
+	logger.lifecycle("signing.key loaded: ${!signingKey.isNullOrBlank()}")
+	logger.lifecycle("signing.password loaded: ${!signingPassword.isNullOrBlank()}")
+
+	if (!keyId.isNullOrBlank() && !signingKey.isNullOrBlank() && !signingPassword.isNullOrBlank()) {
+		logger.lifecycle("🔐 Configuring signing with key ending in: ${keyId.takeLast(4)}")
+		useInMemoryPgpKeys(keyId, signingKey, signingPassword)
+	} else {
+		logger.error("❌ Missing signing config — publish will fail!")
+	}
+
+	// ❗ Always declare what to sign — even if keys are missing
 	sign(publishing.publications["maven"])
+}
+
+
+
+gradle.taskGraph.whenReady {
+	logger.lifecycle("\n=== Build Configuration ===")
+	logger.lifecycle("Group: $group")
+	logger.lifecycle("Version: $version")
+
+	fun Any?.toDebugString() = this?.toString()?.takeIf { it.isNotBlank() } ?: "NOT FOUND"
+	fun Any?.isPresent() = !this?.toString().isNullOrBlank()
+
+	logger.lifecycle("Signing Key ID: ${findProperty("signing.keyId").toDebugString()}")
+	logger.lifecycle("Signing Key Present: ${findProperty("signing.key").isPresent()}")
+	logger.lifecycle("Signing Password Present: ${findProperty("signing.password").isPresent()}")
+	logger.lifecycle("Maven Username Present: ${findProperty("mavenCentralUsername").isPresent()}")
+	logger.lifecycle("=========================\n")
+}
+
+tasks.register("printSigningConfig") {
+	doLast {
+		fun Any?.toDebugString() = this?.toString()?.takeIf { it.isNotBlank() } ?: "NOT FOUND"
+		fun Any?.isPresent() = !this?.toString().isNullOrBlank()
+
+		println("\n=== Signing Configuration ===")
+		println("Key ID: ${findProperty("signing.keyId").toDebugString()}")
+		println("Key Present: ${findProperty("signing.key").isPresent()}")
+		println("Password Present: ${findProperty("signing.password").isPresent()}")
+		println("==========================\n")
+	}
 }

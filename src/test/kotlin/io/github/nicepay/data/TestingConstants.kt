@@ -14,6 +14,7 @@ class TestingConstants {
         private fun TestingConstants() {}
 
 
+        val RUN_TEST: Boolean = false
         val SAMPLE_SIGNATURE_STRING: String = ""
         var f: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
 

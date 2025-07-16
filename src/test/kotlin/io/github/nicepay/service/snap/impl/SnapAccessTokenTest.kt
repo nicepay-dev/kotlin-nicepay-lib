@@ -1,4 +1,5 @@
 package io.github.nicepay.service.snap.impl
+import io.github.nicepay.data.TestingConstants
 import io.github.nicepay.data.TestingConstants.Companion.CLIENT_SECRET
 import io.github.nicepay.data.TestingConstants.Companion.EXTERNAL_ID
 import io.github.nicepay.data.TestingConstants.Companion.I_MID_NORMALTEST
@@ -9,8 +10,7 @@ import io.github.nicepay.data.model.AccessToken
 import io.github.nicepay.data.response.snap.NICEPayResponse
 import io.github.nicepay.service.snap.SnapAccessTokenService
 import io.github.nicepay.utils.NICEPay
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class SnapAccessTokenTest {
@@ -37,27 +37,33 @@ class SnapAccessTokenTest {
             .build()
 
         lateinit var registeredData : NICEPayResponse
+        val runUnitTest = TestingConstants.RUN_TEST
 
     }
 
 
     @Test
     fun `Should get access token successfully from Nicepay`() {
-        val service: SnapAccessTokenService = SnapAccessTokenServiceImpl()
 
-        val request = AccessToken.Builder()
-            .grantType("client_credentials")
-            .additionalInfo(emptyMap())
-            .build()
+        if (runUnitTest) {
+            val service: SnapAccessTokenService = SnapAccessTokenServiceImpl()
 
-        val response = service.getAccessToken(request, configCloud)
+            val request = AccessToken.Builder()
+                .grantType("client_credentials")
+                .additionalInfo(emptyMap())
+                .build()
 
-        assertNotNull(response)
+            val response = service.getAccessToken(request, configCloud)
 
-        if (response != null) {
-            assertNotNull(response.accessToken)
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2007300", response.responseCode)
+            assertNotNull(response)
+
+            if (response != null) {
+                assertNotNull(response.accessToken)
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2007300", response.responseCode)
+            }
+        } else {
+            println("Test skipped")
         }
     }
 

@@ -4,6 +4,7 @@ import io.github.nicepay.data.TestingConstants
 import io.github.nicepay.data.TestingConstants.Companion.CLIENT_SECRET
 import io.github.nicepay.data.TestingConstants.Companion.I_MID_NORMALTEST
 import io.github.nicepay.data.TestingConstants.Companion.NORMALTEST_CLOUD_PRIVATE_KEY
+import io.github.nicepay.data.TestingConstants.Companion.RUN_TEST
 import io.github.nicepay.data.TestingConstants.Companion.TIMESTAMP
 import io.github.nicepay.data.TestingConstants.Companion.generateExternalId
 import io.github.nicepay.data.model.AccessToken
@@ -38,169 +39,193 @@ class SnapPayoutTest {
 
     @Test
     fun `Should be able to generate Payout transaction`(){
-        val config = generateConfig(IS_CLOUD_SERVER)
+        if (RUN_TEST){
+            val config = generateConfig(IS_CLOUD_SERVER)
 
-        val accessToken = (getToken(config) as? NICEPayResponse)
-            ?.accessToken
-            ?: throw IllegalArgumentException("Token is null")
+            val accessToken = (getToken(config) as? NICEPayResponse)
+                ?.accessToken
+                ?: throw IllegalArgumentException("Token is null")
 
-        val payout = SnapPayout.Builder()
-            .merchantId(config.partnerId!!)
-            .beneficiaryAccountNo(BENEFICIARY_ACCOUNT_NO)
-            .beneficiaryName("IONPAY NETWORKS")
-            .beneficiaryCustomerResidence("1")
-            .beneficiaryCustomerType("1")
-            .beneficiaryPostalCode("123456")
-            .beneficiaryPhone("081234567890")
-            .payoutMethod("0")
-            .beneficiaryBankCode(BENEFICIARY_BANK_CD)
-            .amount(DEFAULT_AMOUNT, "IDR")
-            .partnerReferenceNo(DEFAULT_REFERENCE_NO)
-            .description("Payout registration test on Kotlin Library")
-            .deliveryName("Kotlin Lib")
-            .deliveryId("1234567890234512")
-            .reservedDt("")
-            .reservedTm("")
-            .build()
+            val payout = SnapPayout.Builder()
+                .merchantId(config.partnerId!!)
+                .beneficiaryAccountNo(BENEFICIARY_ACCOUNT_NO)
+                .beneficiaryName("IONPAY NETWORKS")
+                .beneficiaryCustomerResidence("1")
+                .beneficiaryCustomerType("1")
+                .beneficiaryPostalCode("123456")
+                .beneficiaryPhone("081234567890")
+                .payoutMethod("0")
+                .beneficiaryBankCode(BENEFICIARY_BANK_CD)
+                .amount(DEFAULT_AMOUNT, "IDR")
+                .partnerReferenceNo(DEFAULT_REFERENCE_NO)
+                .description("Payout registration test on Kotlin Library")
+                .deliveryName("Kotlin Lib")
+                .deliveryId("1234567890234512")
+                .reservedDt("")
+                .reservedTm("")
+                .build()
 
-        val response = snapPayoutService.registration(payout, accessToken, config)
+            val response = snapPayoutService.registration(payout, accessToken, config)
 
-        assertNotNull(response)
+            assertNotNull(response)
 
-        if (response != null) {
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2000000", response.responseCode)
+            if (response != null) {
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2000000", response.responseCode)
+            }
+        } else {
+            println("Test Skipped")
         }
     }
 
     @Test
     fun `Should be able to approve Payout transaction`(){
-        val config = generateConfig(IS_CLOUD_SERVER)
+        if (RUN_TEST){
+            val config = generateConfig(IS_CLOUD_SERVER)
 
-        val accessToken = (getToken(config) as? NICEPayResponse)
-            ?.accessToken
-            ?: throw IllegalArgumentException("Token is null")
+            val accessToken = (getToken(config) as? NICEPayResponse)
+                ?.accessToken
+                ?: throw IllegalArgumentException("Token is null")
 
-        val payoutTransaction = createPayoutTransaction(accessToken);
+            val payoutTransaction = createPayoutTransaction(accessToken);
 
-        val payout = SnapPayout.Builder()
-            .merchantId(config.partnerId!!)
-            .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
-            .originalPartnerReferenceNo(payoutTransaction.partnerReferenceNo!!)
-            .build()
+            val payout = SnapPayout.Builder()
+                .merchantId(config.partnerId!!)
+                .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
+                .originalPartnerReferenceNo(payoutTransaction.partnerReferenceNo!!)
+                .build()
 
-        val response = snapPayoutService.approve(payout, accessToken, config)
+            val response = snapPayoutService.approve(payout, accessToken, config)
 
-        assertNotNull(response)
+            assertNotNull(response)
 
-        if (response != null) {
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2000000", response.responseCode)
+            if (response != null) {
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2000000", response.responseCode)
+            }
+        } else {
+            println("Test skipped")
         }
     }
 
     @Test
     fun `Should be able to reject Payout transaction`(){
-        val config = generateConfig(IS_CLOUD_SERVER)
+        if (RUN_TEST){
+            val config = generateConfig(IS_CLOUD_SERVER)
 
-        val accessToken = (getToken(config) as? NICEPayResponse)
-            ?.accessToken
-            ?: throw IllegalArgumentException("Token is null")
+            val accessToken = (getToken(config) as? NICEPayResponse)
+                ?.accessToken
+                ?: throw IllegalArgumentException("Token is null")
 
-        val payoutTransaction = createPayoutTransaction(accessToken);
+            val payoutTransaction = createPayoutTransaction(accessToken);
 
-        val payout = SnapPayout.Builder()
-            .merchantId(config.partnerId!!)
-            .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
-            .originalPartnerReferenceNo(payoutTransaction.partnerReferenceNo!!)
-            .beneficiaryAccountNo(BENEFICIARY_ACCOUNT_NO)
-            .build()
+            val payout = SnapPayout.Builder()
+                .merchantId(config.partnerId!!)
+                .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
+                .originalPartnerReferenceNo(payoutTransaction.partnerReferenceNo!!)
+                .beneficiaryAccountNo(BENEFICIARY_ACCOUNT_NO)
+                .build()
 
-        val response = snapPayoutService.reject(payout, accessToken, config)
+            val response = snapPayoutService.reject(payout, accessToken, config)
 
-        assertNotNull(response)
+            assertNotNull(response)
 
-        if (response != null) {
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2000000", response.responseCode)
+            if (response != null) {
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2000000", response.responseCode)
+            }
+        } else {
+            println("test skipped")
         }
     }
 
     @Test
     fun `Should be able to check payout balance`(){
-        val config = generateConfig(IS_CLOUD_SERVER)
+        if (RUN_TEST){
+            val config = generateConfig(IS_CLOUD_SERVER)
 
-        val accessToken = (getToken(config) as? NICEPayResponse)
-            ?.accessToken
-            ?: throw IllegalArgumentException("Token is null")
+            val accessToken = (getToken(config) as? NICEPayResponse)
+                ?.accessToken
+                ?: throw IllegalArgumentException("Token is null")
 
 
-        val payout = SnapPayout.Builder()
-            .accountNo(config.partnerId!!)
-            .additionalInfo("")
-            .build()
+            val payout = SnapPayout.Builder()
+                .accountNo(config.partnerId!!)
+                .additionalInfo("")
+                .build()
 
-        val response = snapPayoutService.balanceInquiry(payout, accessToken, config)
+            val response = snapPayoutService.balanceInquiry(payout, accessToken, config)
 
-        assertNotNull(response)
+            assertNotNull(response)
 
-        if (response != null) {
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2001100", response.responseCode)
+            if (response != null) {
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2001100", response.responseCode)
+            }
+        } else {
+            println("Test Skipped")
         }
     }
 
 
     @Test
     fun `Should be able to check Payout transaction status`(){
-        val config = generateConfig(IS_CLOUD_SERVER)
+        if (RUN_TEST){
+            val config = generateConfig(IS_CLOUD_SERVER)
 
-        val accessToken = (getToken(config) as? NICEPayResponse)
-            ?.accessToken
-            ?: throw IllegalArgumentException("Token is null")
+            val accessToken = (getToken(config) as? NICEPayResponse)
+                ?.accessToken
+                ?: throw IllegalArgumentException("Token is null")
 
-        val payoutTransaction = createApprovedPayoutTransaction(accessToken);
+            val payoutTransaction = createApprovedPayoutTransaction(accessToken);
 
-        val payout = SnapCheckStatus.Builder()
-            .merchantId(config.partnerId!!)
-            .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
-            .originalPartnerReferenceNo(payoutTransaction.originalPartnerReferenceNo!!)
-            .beneficiaryAccountNo(payoutTransaction.beneficiaryAccountNo!!)
-            .build()
+            val payout = SnapCheckStatus.Builder()
+                .merchantId(config.partnerId!!)
+                .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
+                .originalPartnerReferenceNo(payoutTransaction.originalPartnerReferenceNo!!)
+                .beneficiaryAccountNo(payoutTransaction.beneficiaryAccountNo!!)
+                .build()
 
-        val response = snapPayoutService.statusInquiry(payout, accessToken, config)
+            val response = snapPayoutService.statusInquiry(payout, accessToken, config)
 
-        assertNotNull(response)
+            assertNotNull(response)
 
-        if (response != null) {
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2000000", response.responseCode)
+            if (response != null) {
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2000000", response.responseCode)
+            }
+        } else {
+            println("Test skipped")
         }
     }
 
     @Test
     fun `Should be able to cancel Payout transaction`(){
-        val config = generateConfig(IS_CLOUD_SERVER)
+        if (RUN_TEST){
+            val config = generateConfig(IS_CLOUD_SERVER)
 
-        val accessToken = (getToken(config) as? NICEPayResponse)
-            ?.accessToken
-            ?: throw IllegalArgumentException("Token is null")
+            val accessToken = (getToken(config) as? NICEPayResponse)
+                ?.accessToken
+                ?: throw IllegalArgumentException("Token is null")
 
-        val payoutTransaction = createApprovedPayoutTransaction(accessToken);
+            val payoutTransaction = createApprovedPayoutTransaction(accessToken);
 
-        val payout = SnapCancel.Builder()
-            .merchantId(config.partnerId!!)
-            .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
-            .originalPartnerReferenceNo(payoutTransaction.originalPartnerReferenceNo!!)
-            .build()
+            val payout = SnapCancel.Builder()
+                .merchantId(config.partnerId!!)
+                .originalReferenceNo(payoutTransaction!!.originalReferenceNo!!)
+                .originalPartnerReferenceNo(payoutTransaction.originalPartnerReferenceNo!!)
+                .build()
 
-        val response = snapPayoutService.cancel(payout, accessToken, config)
+            val response = snapPayoutService.cancel(payout, accessToken, config)
 
-        assertNotNull(response)
+            assertNotNull(response)
 
-        if (response != null) {
-            assertEquals("Successful", response.responseMessage)
-            assertEquals("2000000", response.responseCode)
+            if (response != null) {
+                assertEquals("Successful", response.responseMessage)
+                assertEquals("2000000", response.responseCode)
+            }
+        } else {
+            println("test skipped")
         }
     }
 

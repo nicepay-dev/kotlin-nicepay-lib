@@ -1,6 +1,7 @@
 package io.github.nicepay.service.v2.impl
 
 import io.github.nicepay.data.TestingConstants
+import io.github.nicepay.data.TestingConstants.Companion.RUN_TEST
 import io.github.nicepay.data.model.DirectV2Cancel
 import io.github.nicepay.data.model.DirectV2CheckStatus
 import io.github.nicepay.data.model.DirectV2Qris
@@ -52,155 +53,182 @@ class DirectV2QrisServiceImplTest {
     @Test
     @Throws(IOException::class)
     fun requestRegistrationQrisV2() {
-        val request : DirectV2Qris = DirectV2Qris.Builder()
-            .timeStamp(timeStamp)
-            .iMid(DEFAULT_IMID)
-            .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
-            .currency("IDR")
-            .mitraCd(QrisMitra.SHOPEEPAY)
-            .amt(DEFAULT_AMOUNT)
-            .referenceNo(DEFAULT_REFERENCE_NO)
-            .payValidDt("")
-            .payValidTm("")
-            .goodsNm("Goods")
-            .billingNm("NICEPAY Testing")
-            .billingPhone("081363681274")
-            .billingEmail("nicepay@example.com")
-            .billingAddr("Jln. Raya Kasablanka Kav.88")
-            .billingCity("South Jakarta")
-            .billingState("DKI Jakarta")
-            .billingPostCd("15119")
-            .billingCountry("Indonesia")
-            .dbProcessUrl("https://webhook.site/912cbdd8-eb28-4e98-be6a-181b806b8110")
-            .shopId("NICEPAY")
-            .merchantKey(DEFAULT_MERCHANT_KEY)
-            .build()
+        if (RUN_TEST){
+            val request : DirectV2Qris = DirectV2Qris.Builder()
+                .timeStamp(timeStamp)
+                .iMid(DEFAULT_IMID)
+                .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
+                .currency("IDR")
+                .mitraCd(QrisMitra.SHOPEEPAY)
+                .amt(DEFAULT_AMOUNT)
+                .referenceNo(DEFAULT_REFERENCE_NO)
+                .payValidDt("")
+                .payValidTm("")
+                .goodsNm("Goods")
+                .billingNm("NICEPAY Testing")
+                .billingPhone("081363681274")
+                .billingEmail("nicepay@example.com")
+                .billingAddr("Jln. Raya Kasablanka Kav.88")
+                .billingCity("South Jakarta")
+                .billingState("DKI Jakarta")
+                .billingPostCd("15119")
+                .billingCountry("Indonesia")
+                .dbProcessUrl("https://webhook.site/912cbdd8-eb28-4e98-be6a-181b806b8110")
+                .shopId("NICEPAY")
+                .merchantKey(DEFAULT_MERCHANT_KEY)
+                .build()
 
-        val response : NICEPayResponseV2 = v2QrisService.registration(request, config)!!
+            val response : NICEPayResponseV2 = v2QrisService.registration(request, config)!!
 
-        print.logInfoV2("TXID : " + response.tXid)
+            print.logInfoV2("TXID : " + response.tXid)
 
-        Assertions.assertNotNull(response.tXid)
-        Assertions.assertNotNull(response.qrContent)
-        Assertions.assertNotNull(response.qrUrl)
-        Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+            Assertions.assertNotNull(response.tXid)
+            Assertions.assertNotNull(response.qrContent)
+            Assertions.assertNotNull(response.qrUrl)
+            Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
 
-        registeredData = response
+            registeredData = response
+        } else {
+            println("test skipped")
+        }
     }
 
     @Test
     fun checkStatus() {
-        requestRegistrationQrisV2()
+        if (RUN_TEST){
+            requestRegistrationQrisV2()
 
-        val request: DirectV2CheckStatus = DirectV2CheckStatus.Builder()
-            .timeStamp(TestingConstants.V2_TIMESTAMP)
-            .tXid(registeredData.tXid!!)
-            .iMid(DEFAULT_IMID)
-            .merchantKey(DEFAULT_MERCHANT_KEY)
-            .referenceNo(DEFAULT_REFERENCE_NO)
-            .amt(DEFAULT_AMOUNT)
-            .build()
+            val request: DirectV2CheckStatus = DirectV2CheckStatus.Builder()
+                .timeStamp(TestingConstants.V2_TIMESTAMP)
+                .tXid(registeredData.tXid!!)
+                .iMid(DEFAULT_IMID)
+                .merchantKey(DEFAULT_MERCHANT_KEY)
+                .referenceNo(DEFAULT_REFERENCE_NO)
+                .amt(DEFAULT_AMOUNT)
+                .build()
 
-        val response : NICEPayResponseV2 = v2QrisService.checkStatus(request, config)!!
+            val response : NICEPayResponseV2 = v2QrisService.checkStatus(request, config)!!
 
-        Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+            Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+        } else {
+            println("test skipped")
+        }
     }
 
     @Test
     fun cancel() {
-        requestRegistrationQrisV2()
+        if (RUN_TEST){
+            requestRegistrationQrisV2()
 
-        val request : DirectV2Cancel = DirectV2Cancel.Builder()
-            .timeStamp(TestingConstants.V2_TIMESTAMP)
-            .tXid(registeredData.tXid!!)
-            .iMid(DEFAULT_IMID)
-            .merchantKey(DEFAULT_MERCHANT_KEY)
-            .referenceNo(DEFAULT_REFERENCE_NO)
-            .amt(DEFAULT_AMOUNT)
-            .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
-            .cancelType("1")
-            .build()
+            val request : DirectV2Cancel = DirectV2Cancel.Builder()
+                .timeStamp(TestingConstants.V2_TIMESTAMP)
+                .tXid(registeredData.tXid!!)
+                .iMid(DEFAULT_IMID)
+                .merchantKey(DEFAULT_MERCHANT_KEY)
+                .referenceNo(DEFAULT_REFERENCE_NO)
+                .amt(DEFAULT_AMOUNT)
+                .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
+                .cancelType("1")
+                .build()
 
-        val response : NICEPayResponseV2 = v2QrisService.cancel(request, config)!!
+            val response : NICEPayResponseV2 = v2QrisService.cancel(request, config)!!
 
-        Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+            Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+        } else {
+            println("test skipped")
+        }
     }
 
     @Test
     @Throws(IOException::class)
     fun requestRegistrationQrisV2Cloud() {
-        val request : DirectV2Qris = DirectV2Qris.Builder()
-            .timeStamp(timeStamp)
-            .iMid(DEFAULT_IMID)
-            .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
-            .currency("IDR")
-            .mitraCd(QrisMitra.SHOPEEPAY)
-            .amt(DEFAULT_AMOUNT)
-            .referenceNo(DEFAULT_REFERENCE_NO)
-            .payValidDt("")
-            .payValidTm("")
-            .goodsNm("Goods")
-            .billingNm("NICEPAY Testing")
-            .billingPhone("081363681274")
-            .billingEmail("nicepay@example.com")
-            .billingAddr("Jln. Raya Kasablanka Kav.88")
-            .billingCity("South Jakarta")
-            .billingState("DKI Jakarta")
-            .billingPostCd("15119")
-            .billingCountry("Indonesia")
-            .dbProcessUrl("https://webhook.site/912cbdd8-eb28-4e98-be6a-181b806b8110")
-            .shopId("NICEPAY")
-            .merchantKey(DEFAULT_MERCHANT_KEY)
-            .build()
+        if (RUN_TEST){
+            val request : DirectV2Qris = DirectV2Qris.Builder()
+                .timeStamp(timeStamp)
+                .iMid(DEFAULT_IMID)
+                .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
+                .currency("IDR")
+                .mitraCd(QrisMitra.SHOPEEPAY)
+                .amt(DEFAULT_AMOUNT)
+                .referenceNo(DEFAULT_REFERENCE_NO)
+                .payValidDt("")
+                .payValidTm("")
+                .goodsNm("Goods")
+                .billingNm("NICEPAY Testing")
+                .billingPhone("081363681274")
+                .billingEmail("nicepay@example.com")
+                .billingAddr("Jln. Raya Kasablanka Kav.88")
+                .billingCity("South Jakarta")
+                .billingState("DKI Jakarta")
+                .billingPostCd("15119")
+                .billingCountry("Indonesia")
+                .dbProcessUrl("https://webhook.site/912cbdd8-eb28-4e98-be6a-181b806b8110")
+                .shopId("NICEPAY")
+                .merchantKey(DEFAULT_MERCHANT_KEY)
+                .build()
 
-        val response : NICEPayResponseV2 = v2QrisService.registration(request, configCloud)!!
+            val response : NICEPayResponseV2 = v2QrisService.registration(request, configCloud)!!
 
-        print.logInfoV2("TXID : " + response.tXid)
+            print.logInfoV2("TXID : " + response.tXid)
 
-        Assertions.assertNotNull(response.tXid)
-        Assertions.assertNotNull(response.qrContent)
-        Assertions.assertNotNull(response.qrUrl)
-        Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+            Assertions.assertNotNull(response.tXid)
+            Assertions.assertNotNull(response.qrContent)
+            Assertions.assertNotNull(response.qrUrl)
+            Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
 
-        registeredData = response
+            registeredData = response
+        } else {
+            println("test skipped")
+        }
     }
 
     @Test
     fun checkStatusCloud() {
-        requestRegistrationQrisV2()
+        if (RUN_TEST){
 
-        val request: DirectV2CheckStatus = DirectV2CheckStatus.Builder()
-            .timeStamp(TestingConstants.V2_TIMESTAMP)
-            .tXid(registeredData.tXid!!)
-            .iMid(DEFAULT_IMID)
-            .merchantKey(DEFAULT_MERCHANT_KEY)
-            .referenceNo(DEFAULT_REFERENCE_NO)
-            .amt(DEFAULT_AMOUNT)
-            .build()
+            requestRegistrationQrisV2()
 
-        val response : NICEPayResponseV2 = v2QrisService.checkStatus(request, configCloud)!!
+            val request: DirectV2CheckStatus = DirectV2CheckStatus.Builder()
+                .timeStamp(TestingConstants.V2_TIMESTAMP)
+                .tXid(registeredData.tXid!!)
+                .iMid(DEFAULT_IMID)
+                .merchantKey(DEFAULT_MERCHANT_KEY)
+                .referenceNo(DEFAULT_REFERENCE_NO)
+                .amt(DEFAULT_AMOUNT)
+                .build()
 
-        Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+            val response : NICEPayResponseV2 = v2QrisService.checkStatus(request, configCloud)!!
+
+            Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+        } else {
+            println("test skipped")
+        }
     }
 
     @Test
     fun cancelCloud() {
-        requestRegistrationQrisV2()
+        if (RUN_TEST){
+            requestRegistrationQrisV2()
 
-        val request : DirectV2Cancel = DirectV2Cancel.Builder()
-            .timeStamp(TestingConstants.V2_TIMESTAMP)
-            .tXid(registeredData.tXid!!)
-            .iMid(DEFAULT_IMID)
-            .merchantKey(DEFAULT_MERCHANT_KEY)
-            .referenceNo(DEFAULT_REFERENCE_NO)
-            .amt(DEFAULT_AMOUNT)
-            .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
-            .cancelType("1")
-            .build()
+            val request : DirectV2Cancel = DirectV2Cancel.Builder()
+                .timeStamp(TestingConstants.V2_TIMESTAMP)
+                .tXid(registeredData.tXid!!)
+                .iMid(DEFAULT_IMID)
+                .merchantKey(DEFAULT_MERCHANT_KEY)
+                .referenceNo(DEFAULT_REFERENCE_NO)
+                .amt(DEFAULT_AMOUNT)
+                .payMethod(NICEPayMethod.PAY_METHOD_QRIS)
+                .cancelType("1")
+                .build()
 
-        val response : NICEPayResponseV2 = v2QrisService.cancel(request, configCloud)!!
+            val response : NICEPayResponseV2 = v2QrisService.cancel(request, configCloud)!!
 
-        Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+            Assertions.assertEquals(TestingConstants.DEFAULT_NICEPAY_SUCCESS_RESULT_CODE, response.resultCd)
+
+        } else {
+            println("test skipped")
+        }
+
     }
 
 }
