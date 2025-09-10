@@ -1,7 +1,8 @@
 plugins {
-	kotlin("jvm") version "1.9.25"
-	id("maven-publish")
-	id("signing")
+	kotlin("jvm") version "1.9.0" // or latest version
+	`maven-publish`
+	signing
+	id("com.gradleup.nmcp.aggregation").version("1.0.0")
 }
 
 group = "io.github.nicepay-dev"
@@ -15,6 +16,23 @@ java {
 		languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
+
+tasks.withType<Javadoc>().configureEach {
+	enabled = false // Disable standard Javadoc as we'll use Dokka
+}
+
+nmcpAggregation {
+	centralPortal {
+		username = project.findProperty("mavenCentralUsername").toString()
+		password = project.findProperty("mavenCentralPassword").toString()// publish manually from the portal
+		publishingType = "USER_MANAGED"
+		// or if you want to publish automatically
+	}
+
+	// Publish all projects that apply the 'maven-publish' plugin
+	publishAllProjectsProbablyBreakingProjectIsolation()
+}
+
 
 repositories {
 	mavenCentral()
@@ -42,13 +60,12 @@ tasks.test {
 
 publishing {
 	publications {
-		create<MavenPublication>("maven") {
+		create<MavenPublication>("mavenJava") {
 			groupId = project.group.toString()
 			artifactId = artifactId
 			version = project.version.toString()
 
 			from(components["java"])
-
 			pom {
 				name.set("nicepay-kotlin-client")
 				description.set("Official Kotlin client for NICEPAY Payment APIs (SNAP and V2)")
@@ -91,20 +108,54 @@ publishing {
 				}
 			}
 		}
-	}
 
-	repositories {
-		maven {
-			name = "centralPortal"
-			url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-			credentials {
-				username = findProperty("mavenCentralUsername") as String? ?: System.getenv("MAVEN_CENTRAL_USERNAME")
-				password = findProperty("mavenCentralPassword") as String? ?: System.getenv("MAVEN_CENTRAL_PASSWORD")
+		repositories {
+			maven {
+				name = "MavenCentral"
+				url = uri("https://s01.oss.sonatype.org/content/repositories/releases/")
+				credentials {
+					username = project.findProperty("mavenCentralUsername").toString()
+					password = project.findProperty("mavenCentralPassword").toString()
+				}
 			}
 		}
+
+	}
+
+
+}
+
+
+gradle.taskGraph.whenReady {
+	logger.lifecycle("\n=== Build Configuration ===")
+	logger.lifecycle("Group: $group")
+	logger.lifecycle("Version: $version")
+
+	fun Any?.toDebugString() = this?.toString()?.takeIf { it.isNotBlank() } ?: "NOT FOUND"
+	fun Any?.isPresent() = !this?.toString().isNullOrBlank()
+
+	logger.lifecycle("Signing Key ID: ${findProperty("signing.keyId").toDebugString()}")
+	logger.lifecycle("Signing Key Present: ${findProperty("signing.key").isPresent()}")
+	logger.lifecycle("Signing Password Present: ${findProperty("signing.password").isPresent()}")
+	logger.lifecycle("Maven Username Present: ${findProperty("mavenCentralUsername").isPresent()}")
+	logger.lifecycle("=========================\n")
+}
+
+tasks.register("printSigningConfig") {
+	doLast {
+		fun Any?.toDebugString() = this?.toString()?.takeIf { it.isNotBlank() } ?: "NOT FOUND"
+		fun Any?.isPresent() = !this?.toString().isNullOrBlank()
+
+		println("\n=== Signing Configuration ===")
+		println("Key ID: ${findProperty("signing.keyId").toDebugString()}")
+		println("Key Present: ${findProperty("signing.key").isPresent()}")
+		println("Password Present: ${findProperty("signing.password").isPresent()}")
+		println("==========================\n")
 	}
 }
 
 signing {
-	sign(publishing.publications["maven"])
+	useGpgCmd()
+	sign(publishing.publications["mavenJava"])
+
 }

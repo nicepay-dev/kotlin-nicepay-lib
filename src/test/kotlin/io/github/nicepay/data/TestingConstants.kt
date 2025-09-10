@@ -45,7 +45,7 @@ class TestingConstants {
         val EWALLET_CLIENT_SECRET: String = ""
         val DEFAULT_NICEPAY_SUCCESS_RESULT_CODE = "0000"
 
-        fun openHtmlEwalletV2InBrowser(resClient: String, tXid: String) {
+        fun openHtmlEwalletV2InBrowser(resClient: String?, tXid: String) {
             val script = "<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js'></script> \n"
             openHtmlInBrowser(script + resClient, tXid)
         }

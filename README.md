@@ -9,15 +9,16 @@ It supports both [NICEPAY SNAP APIs](https://docs.nicepay.co.id/nicepay-api-snap
 
 ## 💳 Supported Payment Methods
 
-| Method               | SNAP | V2   |
-|----------------------|------|------|
-| Virtual Account      | ✅   | ✅   |
-| E-Wallet             | ✅   | ✅   |
-| QRIS                 | ✅   | ✅   |
-| Card Payment         | ❌   | ✅   |
-| Convenience Store    | ❌   | ✅   |
-| Payloan              | ❌   | ✅   |
-| Payout / Disbursement| ✅   | ✅   |
+| Method               | SNAP | V2   | V1  |
+|----------------------|------|------|-----|
+| Card Payment         | ❌   | ✅   | ✅   |
+| Virtual Account      | ✅   | ✅   | ✅   |
+| Convenience Store    | ❌   | ✅   | ✅   |
+| E-Wallet             | ✅   | ✅   | ✅   |
+| QRIS                 | ✅   | ✅   | ✅   |
+| Payloan              | ❌   | ✅   | ❌   |
+| Payout / Disbursement| ✅   | ✅   | ❌   |
+
 
 ---
 
@@ -135,7 +136,23 @@ dependencies {
   - Cancel Transaction
 - 💳 **Card & E-Wallet**
   - Payment Flow
-
+  
+### V1 API
+- 🔁 **Common**
+  - Register Payment (VA, Card, Ewallet, etc.)
+  - Status Inquiry
+  - Cancel Transaction
+- 💳 **Card**
+  - Request Token 
+  - Payment 3DS
+  - Payment MIGS
+  - Payment 
+  - Recurring Issue 
+  - Recurring Payment 
+  - Tokenized Recurring Card (Recurring Issue without payment)
+  - Check Token
+  - Remove Token 
+  - Capture Pre-Auth Transaction
 ---
 
 ## 🚀 Quick Example
@@ -178,7 +195,16 @@ println("Access Token: ${response.accessToken}")
 [MIT License](LICENSE)
 
 ---
+## Version History
 
+### [1.0.0] - 2025-07-15
+- **Added:** V2 Redirect and Direct Service
+- **Added:** SNAP Service.
+
+### [1.1.0] - 2025-09-09
+- **Added:** V1 Redirect and Direct Service.
+- 
+---
 ## 🧪 Running Tests
 
 ```bash
