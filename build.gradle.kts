@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.nicepay-dev"
-version = "1.0.0"
+version = "1.1.0"
 val artifactId = "nicepay-kotlin-client"
 
 java {
