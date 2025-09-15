@@ -2,6 +2,7 @@ package io.github.nicepay.utils
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.GsonBuilder
+import io.github.nicepay.retrofit.converter.NicepayResponseV1Converter
 import okhttp3.*
 import okhttp3.Headers.Companion.toHeaders
 import retrofit2.Invocation
@@ -20,6 +21,10 @@ object ApiUtils {
     private val retrofitBuilder = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
 
+    private val retrofitBuilderV1 = Retrofit.Builder()
+        .addConverterFactory(NicepayResponseV1Converter.create()) // handles NICEPay responses
+        .addConverterFactory(GsonConverterFactory.create())    // fallback
+
     private val httpClient = OkHttpClient.Builder()
         .connectTimeout(Duration.ofSeconds(10))
 
@@ -31,6 +36,9 @@ object ApiUtils {
     // == Retrofit Builder ==
     private fun buildRetrofit(baseUrl: String, client: OkHttpClient.Builder): Retrofit =
         retrofitBuilder.client(client.build()).baseUrl(baseUrl).build()
+
+    private fun buildRetrofitV1(baseUrl: String, client: OkHttpClient.Builder): Retrofit =
+        retrofitBuilderV1.client(client.build()).baseUrl(baseUrl).build()
 
     // == Main entry point ==
     fun <S> createService(
@@ -63,10 +71,18 @@ object ApiUtils {
         return buildRetrofit(config.getNICEPayBaseUrl(), httpClient).create(serviceClass)
     }
 
+
     fun <S> createServiceV1(serviceClass: Class<S>, config: NICEPay): S {
         httpClient.interceptors().clear()
+
+        // Add logging interceptor to the httpClient
+//        val loggingInterceptor = HttpLoggingInterceptor().apply {
+//            level = HttpLoggingInterceptor.Level.BODY // This will print the full request and response body
+//        }
+//        httpClient.addInterceptor(loggingInterceptor)
+
         httpClient.addInterceptor(loggingInterceptor("V1"))
-        return buildRetrofit(config.getNICEPayBaseUrl(), httpClient).create(serviceClass)
+        return buildRetrofitV1(config.getNICEPayBaseUrl(), httpClient).create(serviceClass)
     }
 
     private fun requestInterceptor(
@@ -103,7 +119,7 @@ object ApiUtils {
         val wrappedBody = ResponseBody.create(contentType, bodyString)
 
         val args = request.tag(Invocation::class.java)?.arguments()
-        val tag = "Request Data V$version"
+        val tag = "Request Data $version"
         print.logInfo("$tag:\n${gson.toJson(args)}")
 
         response.newBuilder().body(wrappedBody).build()
